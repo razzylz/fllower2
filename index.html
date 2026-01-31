@@ -1,76 +1,76 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Bunga Untuk Kamu 🌸</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
-    .text {
-      position: fixed;
-      bottom: 30px;
-      width: 100%;
-      text-align: center;
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 20px;
-      opacity: 0.8;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Bunga Untuk Kamu 🌸</title>
+<style>
+  body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+  }
+  .text {
+    position: fixed;
+    bottom: 25px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    opacity: 0.85;
+  }
+</style>
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
+<canvas id="c"></canvas>
 <div class="text">🌸 Bunga ini cuma buat kamu</div>
 
 <script>
-const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-window.addEventListener("resize", () => {
+function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-});
+}
+resize();
+window.addEventListener("resize", resize);
 
 let t = 0;
+const petals = 12;
 
-function drawPetal(angle, radius, hue) {
-  ctx.beginPath();
-  for (let i = 0; i < 100; i++) {
-    const a = angle + i * 0.02;
-    const r = radius * Math.sin(i * 0.05);
-    const x = canvas.width / 2 + Math.cos(a) * r;
-    const y = canvas.height / 2 + Math.sin(a) * r;
-    ctx.lineTo(x, y);
-  }
-  ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-}
-
-function animate() {
-  ctx.fillStyle = "rgba(0,0,0,0.15)";
+function drawFlower() {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  for (let i = 0; i < 20; i++) {
-    drawPetal(t + i * (Math.PI * 2 / 20), 300, (t * 40 + i * 18) % 360);
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const baseRadius = Math.min(cx, cy) * 0.75;
+
+  for (let p = 0; p < petals; p++) {
+    ctx.beginPath();
+    for (let a = 0; a <= Math.PI * 2; a += 0.01) {
+      // ROSE CURVE (INI YANG BIKIN KELopak)
+      const r = baseRadius * Math.sin(petals * a + t);
+      const x = cx + Math.cos(a) * r;
+      const y = cy + Math.sin(a) * r;
+      ctx.lineTo(x, y);
+    }
+
+    ctx.strokeStyle = `hsl(${(t * 50 + p * 30) % 360}, 100%, 60%)`;
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
   }
 
   t += 0.01;
-  requestAnimationFrame(animate);
+  requestAnimationFrame(drawFlower);
 }
 
-animate();
+drawFlower();
 </script>
 
 </body>
